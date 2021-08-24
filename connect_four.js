@@ -14,7 +14,8 @@ class Cell
     constructor(id)
     {
         this.id = id
-        this.active = true
+        this.used = true
+        
     }
 }
 
@@ -51,23 +52,37 @@ class Game
         }
     }
 
+    findNearestFreeColumnPlace(row)
+    {
+        for (let column = 0; column< columns; column++)
+        {
+            if (this.cell_list[row][column].used == false)
+            {
+                return row - 1
+            }
+        }
+        return row - 1
+    }
+
 
     insertPiece(button)
     {
         let cell = this.findCell(button.id)
-        if (cell.active)
+        let color = ''
+        if (cell.used)
         {
-            cell.active = false
+            cell.used = false
             if (document.getElementById("player").className == "player1")
             {
-                button.style.background='#FF0000';
+                color = '#FF0000'
                 document.getElementById("player").className = "player2"
             }
             else
             {
-                button.style.background='#FFFF00';
+                color = '#FFFF00'
                 document.getElementById("player").className = "player1"
             }
+            document.getElementById(""+cell.id[0]+""+this.findNearestFreeColumnPlace(cell.id[1])).style.background=color;//red
         }
     }
 }
