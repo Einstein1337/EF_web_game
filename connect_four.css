@@ -27,11 +27,11 @@ button {
   }
   
  div.player1 button:hover {
-    background-color: red;
+    background-color: rgb(255, 170, 170);
   }
 
   div.player2 button:hover {
-    background-color: yellow; 
+    background-color: lightyellow; 
   }
   h1 {
       font-family: Arial, Helvetica, sans-serif;
