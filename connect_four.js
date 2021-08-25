@@ -14,8 +14,7 @@ class Cell
     constructor(id)
     {
         this.id = id
-        this.used = true
-        
+        this.used = false
     }
 }
 
@@ -29,10 +28,11 @@ class Game
 
         for (let r = 0; r < rows; r++)
         {
-            this.cell_list.push([])
+            this.cell_list.push([]);
             for (let c = 0; c < columns; c++)
             {
-                this.cell_list[r].push(new Cell(""+r + ""+c));
+                let id = ""+r + ""+c;
+                this.cell_list[r].push(new Cell(id));
             }
         }
     }
@@ -45,23 +45,22 @@ class Game
             {
                 if (this.cell_list[r][c].id == id)
                 {
-                    console.log(""+r+""+c)
-                    return this.cell_list[r][c]
+                    return this.cell_list[r][c];
                 }
             }
         }
     }
 
-    findNearestFreeColumnPlace(row)
+    findNearestFreeColumnPlace(column)
     {
-        for (let column = 0; column< columns; column++)
+        for (let row = 0; row < rows; row++)
         {
-            if (this.cell_list[row][column].used == false)
+            if (this.cell_list[row][column].used == true)
             {
-                return row - 1
+                return row - 1;
             }
         }
-        return row - 1
+        return rows - 1;
     }
 
 
@@ -69,20 +68,22 @@ class Game
     {
         let cell = this.findCell(button.id)
         let color = ''
-        if (cell.used)
+        if (!cell.used)
         {
             cell.used = false
             if (document.getElementById("player").className == "player1")
             {
-                color = '#FF0000'
-                document.getElementById("player").className = "player2"
+                color = '#FF0000';
+                document.getElementById("player").className = "player2";
             }
             else
             {
-                color = '#FFFF00'
-                document.getElementById("player").className = "player1"
+                color = '#FFFF00';
+                document.getElementById("player").className = "player1";
             }
-            document.getElementById(""+cell.id[0]+""+this.findNearestFreeColumnPlace(cell.id[1])).style.background=color;//red
+            let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
+            this.cell_list[free_row][cell.id[1]].used = true
+            document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
         }
     }
 }
@@ -102,7 +103,6 @@ class View
             button.addEventListener("click", () => game.insertPiece(button), false);
             index++;
         }  
-        
     }
 }
 
