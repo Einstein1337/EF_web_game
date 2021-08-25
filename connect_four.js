@@ -26,6 +26,7 @@ class Game
         this.player1 = new Player(1);
         this.player2 = new Player(2);
         this.cell_list = []
+        this.able_to_click = true
 
         for (let r = 0; r < rows; r++)
         {
@@ -73,11 +74,12 @@ class Game
             let no_win = false;
             let i = i_j_list[dir][0];
             let j = i_j_list[dir][1];
+            let running_var = 1;
             for (let neighbour = 0; neighbour < 4; neighbour++)
             {
                 let fail = false;
-                let next_row = last_token_row+i*(neighbour+1);
-                let next_column = last_token_column+j*(neighbour+1);
+                let next_row = last_token_row+i*running_var;
+                let next_column = last_token_column+j*running_var;
 
                 if(next_row <= rows-1 && next_column <= columns-1 && next_row >= 0 && next_column >= 0)
                 {
@@ -106,6 +108,7 @@ class Game
                         i *= -1;
                         j *= -1;
                         no_win == true;
+                        running_var = 0
                     }
                 }
 
@@ -113,40 +116,56 @@ class Game
                 {
                     return true;
                 }
+                running_var++;
             }    
         }
         return false;
 
     }
 
+    winScreen(color)
+    {
+        for (let r = 0; r < rows; r++)
+        {
+            for (let c = 0; c < columns; c++)
+            {
+                document.getElementById(this.cell_list[r][c].id).style.background=color;//red
+            }
+        }
+    }
+
     insertPiece(button)
     {
-        let cell = this.findCell(button.id)
-        let color = ''
-        let color_str = ""
-        if (!cell.used)
+        if (this.able_to_click)
         {
-            cell.used = false
-            if (document.getElementById("player").className == "player1")
+            let cell = this.findCell(button.id)
+            let color = ''
+            let color_str = ""
+            if (!cell.used)
             {
-                color = '#FF0000';
-                color_str = "red"
-                document.getElementById("player").className = "player2";
-            }
-            else
-            {
-                color = '#FFFF00';
-                color_str = "yellow"
-                document.getElementById("player").className = "player1";
-            }
-            let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
-            this.cell_list[free_row][parseInt(cell.id[1])].used = true
-            this.cell_list[free_row][parseInt(cell.id[1])].color = color_str
-            document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
-            let win = this.fieldEvaluation(free_row, parseInt(cell.id[1]), color_str)
-            if(win)
-            {
-                console.log("Win")
+                cell.used = false
+                if (document.getElementById("player").className == "player1")
+                {
+                    color = '#FF0000';
+                    color_str = "red"
+                    document.getElementById("player").className = "player2";
+                }
+                else
+                {
+                    color = '#FFFF00';
+                    color_str = "yellow"
+                    document.getElementById("player").className = "player1";
+                }
+                let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
+                this.cell_list[free_row][parseInt(cell.id[1])].used = true
+                this.cell_list[free_row][parseInt(cell.id[1])].color = color_str
+                document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
+                let win = this.fieldEvaluation(free_row, parseInt(cell.id[1]), color_str)
+                if(win)
+                {
+                    this.winScreen(color);
+                    this.able_to_click = false
+                }
             }
         }
     }
