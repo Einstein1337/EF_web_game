@@ -12,7 +12,14 @@ div.grid {
     border: 1.5vw double black; 
 }
 
-button {
+#NewGame{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: perspective(-50%, -50%);
+}
+
+div.grid button {
     transition-duration: 0.4s;
     margin: auto;
     background-color: gray;
