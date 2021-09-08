@@ -1,14 +1,6 @@
 let columns = 7;
 let rows = 6;
 
-class Player
-{
-    constructor(id)
-    {
-        this.id = id;
-    }
-}
-
 class Cell
 {
     constructor(id)
@@ -23,10 +15,14 @@ class Game
 {
     constructor()
     {
-        this.player1 = new Player(1);
-        this.player2 = new Player(2);
+        this.able_to_find_new_game = true
+        this.player = 0
         this.cell_list = []
-        this.able_to_click = true
+        this.able_to_click = false
+        this.myTurn = false
+        this.player = ""
+        this.player_color = ''
+        this.player_color_str = ""
 
         for (let r = 0; r < rows; r++)
         {
@@ -35,6 +31,43 @@ class Game
             {
                 let id = ""+r + ""+c;
                 this.cell_list[r].push(new Cell(id));
+            }
+        }
+    }
+
+    updateGame(data)
+    {
+        this.able_to_click = data.turn
+        if (this.able_to_click == true)
+        {
+            document.getElementById("player").className = this.player
+        }
+
+    }
+
+    async newGame()
+    {
+        console.log(this.able_to_find_new_game)
+        if(this.able_to_find_new_game)
+        {
+            this.able_to_find_new_game = false
+            try {
+                const response = await fetch('/newgame');
+                const json = await response.json();
+                this.player = json.player
+                if (this.player == "player1")
+                {
+                    this.player_color = '#FF0000';
+                    this.player_color_str = "red"
+                }
+                else
+                {
+                    this.player_color = '#FFFF00';
+                    this.player_color_str = "yellow"
+                }
+                this.updateGame(json);
+            } catch (error) {
+                console.log(error);
             }
         }
     }
@@ -139,31 +172,17 @@ class Game
         if (this.able_to_click)
         {
             let cell = this.findCell(button.id)
-            let color = ''
-            let color_str = ""
             if (!cell.used)
             {
                 cell.used = false
-                if (document.getElementById("player").className == "player1")
-                {
-                    color = '#FF0000';
-                    color_str = "red"
-                    document.getElementById("player").className = "player2";
-                }
-                else
-                {
-                    color = '#FFFF00';
-                    color_str = "yellow"
-                    document.getElementById("player").className = "player1";
-                }
                 let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
                 this.cell_list[free_row][parseInt(cell.id[1])].used = true
-                this.cell_list[free_row][parseInt(cell.id[1])].color = color_str
+                this.cell_list[free_row][parseInt(cell.id[1])].color = this.player_color_str
                 document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
                 let win = this.fieldEvaluation(free_row, parseInt(cell.id[1]), color_str)
                 if(win)
                 {
-                    this.winScreen(color);
+                    this.winScreen(this.player_color);
                     this.able_to_click = false
                 }
             }
@@ -185,7 +204,8 @@ class View
         {
             button.addEventListener("click", () => game.insertPiece(button), false);
             index++;
-        }  
+        } 
+        document.getElementById("NewGame").addEventListener("click", () => game.newGame(), false)
     }
 }
 

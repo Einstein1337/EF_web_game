@@ -4,6 +4,7 @@ COLUMNS = 7
 class Player:
     def __init__(self, id, color):
         self.id = id
+        self.str = f"player{self.id}"
         self.color = color
 
 
@@ -28,7 +29,8 @@ class Game:
                 self.cell_list[r].append(Cell(f"{r}{c}"))
 
     def Join(self):
-        pass
+        self.mode = "running"
+        return self.player2.str
     
 
     def fieldEvaluation(self, last_token_row, last_token_column, last_color):

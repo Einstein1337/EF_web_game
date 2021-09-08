@@ -13,10 +13,10 @@ div.grid {
 }
 
 #NewGame{
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: perspective(-50%, -50%);
+  text-align: center;
+  margin: auto;
+  display: flex;
+  display: grid;
 }
 
 div.grid button {
@@ -40,6 +40,7 @@ div.grid button {
   div.player2 button:hover {
     background-color: lightyellow; 
   }
+
   h1 {
       font-family: Arial, Helvetica, sans-serif;
       text-align: center;
