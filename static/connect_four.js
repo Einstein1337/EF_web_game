@@ -15,6 +15,7 @@ class Game
 {
     constructor()
     {
+        this.id = 0
         this.able_to_find_new_game = true
         this.player = 0
         this.cell_list = []
@@ -35,14 +36,52 @@ class Game
         }
     }
 
+
     updateGame(data)
     {
         this.able_to_click = data.turn
         if (this.able_to_click == true)
         {
-            document.getElementById("player").className = this.player
+            document.getElementById("player").className = this.player;
         }
+        for (let r = 0; r < rows; r++)
+        {
+            for (let c = 0; c < columns; c++)
+            {
+                if(data.cli[r][c] == 1)
+                {
+                    this.cell_list[r][c].used = true;
+                    this.cell_list[r][c].color = "red";
+                    document.getElementById(""+r+""+c).style.background='#FF0000';
+                }
+                else if(data.cli[r][c] == 2)
+                {
+                    this.cell_list[r][c].used = true;
+                    this.cell_list[r][c].color = "yellow"
+                    document.getElementById(""+r+""+c).style.background='#FFFF00'
+                }
+            }
+        }
+        console.log(data.cli)
+    }
 
+    async fetchUpdateFromServer()
+    {
+        try {
+            const response = await fetch('/gamestate/'+this.player+'/'+this.id);
+            const json = await response.json();
+            this.updateGame(json);
+          } catch (error) {
+            console.log(error);
+          }
+    }
+
+    wait()
+    {
+        while(!this.able_to_click)
+        {
+            this.fetchUpdateFromServer();
+        }
     }
 
     async newGame()
@@ -54,7 +93,8 @@ class Game
             try {
                 const response = await fetch('/newgame');
                 const json = await response.json();
-                this.player = json.player
+                this.player = json.player;
+                this.id = json.id;
                 if (this.player == "player1")
                 {
                     this.player_color = '#FF0000';
@@ -66,10 +106,13 @@ class Game
                     this.player_color_str = "yellow"
                 }
                 this.updateGame(json);
+                this.wait()
             } catch (error) {
                 console.log(error);
             }
+            
         }
+        
     }
 
     findCell(id)
@@ -156,13 +199,13 @@ class Game
 
     }
 
-    winScreen(color)
+    winScreen()
     {
         for (let r = 0; r < rows; r++)
         {
             for (let c = 0; c < columns; c++)
             {
-                document.getElementById(this.cell_list[r][c].id).style.background=color;//red
+                document.getElementById(this.cell_list[r][c].id).style.background=this.player_color;//red
             }
         }
     }
@@ -178,13 +221,9 @@ class Game
                 let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
                 this.cell_list[free_row][parseInt(cell.id[1])].used = true
                 this.cell_list[free_row][parseInt(cell.id[1])].color = this.player_color_str
-                document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
-                let win = this.fieldEvaluation(free_row, parseInt(cell.id[1]), color_str)
-                if(win)
-                {
-                    this.winScreen(this.player_color);
-                    this.able_to_click = false
-                }
+                document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=this.player_color;//red
+                this.able_to_click = false
+                document.getElementById("player").className = "notmyturn"
             }
         }
     }

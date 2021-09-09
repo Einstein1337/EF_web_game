@@ -14,7 +14,7 @@
     <button id="NewGame">New Game</button>
     <br>
     <div class="grid"> 
-        <div class="player1" id ="player">
+        <div class="notmyturn" id ="player">
         {% for row in range(6) %}
             {% for column in range(7) %}
             <button id="{{row}}{{column}}"></button>

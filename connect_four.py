@@ -68,6 +68,20 @@ class Game:
                 running_var += 1
         return False
 
+    def cellState(self):
+        cell_list_int = []
+        for r in range(ROWS):
+            cell_list_int.append([])
+            for c in range(COLUMNS):
+                if self.cell_list[r][c].used == False:
+                    cell_list_int.append(0)
+                elif self.cell_list[r][c].color == "red":
+                    cell_list_int.append(1)
+                elif self.cell_list[r][c].color == "yellow":
+                    cell_list_int.append(2)
+        return cell_list_int
+                
+
     def move(self, column):
         for row in range(ROWS):
             if self.cell_list[row][column].used == True:
