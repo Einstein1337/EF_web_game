@@ -13,10 +13,9 @@ div.grid {
 }
 
 #NewGame{
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: perspective(-50%, -50%);
+  text-align: center;
+  margin: auto;
+  display: flex;
 }
 
 div.grid button {

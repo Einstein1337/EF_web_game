@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import url_for
+from flask import session
 from werkzeug.utils import redirect
 from flask import render_template
 from connect_four import *

@@ -65,6 +65,11 @@ class Game
         return rows - 1;
     }
 
+    NewGame()
+    {
+        console.log("NewGame");
+    }
+
     fieldEvaluation(last_token_row, last_token_column, last_color)
     {
         let i_j_list = [[-1, 1],[0, 1],[1, 1],[1, 0]];
@@ -180,6 +185,7 @@ class View
 
     connectToGame(game) 
     {
+        document.getElementById("NewGame").addEventListener("click", () => game.NewGame(), false);
         let index = 0;
         for (let button of this.grid.getElementsByTagName("button"))
         {
