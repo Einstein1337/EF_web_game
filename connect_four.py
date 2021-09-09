@@ -4,6 +4,7 @@ COLUMNS = 7
 class Player:
     def __init__(self, id, color):
         self.id = id
+        self.str = f"player{self.id}"
         self.color = color
 
 
@@ -28,7 +29,8 @@ class Game:
                 self.cell_list[r].append(Cell(f"{r}{c}"))
 
     def Join(self):
-        pass
+        self.mode = "running"
+        return self.player2.str
     
 
     def fieldEvaluation(self, last_token_row, last_token_column, last_color):
@@ -65,6 +67,20 @@ class Game:
                     return True
                 running_var += 1
         return False
+
+    def cellState(self):
+        cell_list_int = []
+        for r in range(ROWS):
+            cell_list_int.append([])
+            for c in range(COLUMNS):
+                if self.cell_list[r][c].used == False:
+                    cell_list_int.append(0)
+                elif self.cell_list[r][c].color == "red":
+                    cell_list_int.append(1)
+                elif self.cell_list[r][c].color == "yellow":
+                    cell_list_int.append(2)
+        return cell_list_int
+                
 
     def move(self, column):
         for row in range(ROWS):

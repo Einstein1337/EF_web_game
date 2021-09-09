@@ -1,14 +1,6 @@
 let columns = 7;
 let rows = 6;
 
-class Player
-{
-    constructor(id)
-    {
-        this.id = id;
-    }
-}
-
 class Cell
 {
     constructor(id)
@@ -23,10 +15,15 @@ class Game
 {
     constructor()
     {
-        this.player1 = new Player(1);
-        this.player2 = new Player(2);
+        this.id = 0
+        this.able_to_find_new_game = true
+        this.player = 0
         this.cell_list = []
-        this.able_to_click = true
+        this.able_to_click = false
+        this.myTurn = false
+        this.player = ""
+        this.player_color = ''
+        this.player_color_str = ""
 
         for (let r = 0; r < rows; r++)
         {
@@ -37,6 +34,83 @@ class Game
                 this.cell_list[r].push(new Cell(id));
             }
         }
+    }
+
+
+    updateGame(data)
+    {
+        this.able_to_click = data.turn
+        if (this.able_to_click == true)
+        {
+            document.getElementById("player").className = this.player;
+        }
+        for (let r = 0; r < rows; r++)
+        {
+            for (let c = 0; c < columns; c++)
+            {
+                if(data.cli[r][c] == 1)
+                {
+                    this.cell_list[r][c].used = true;
+                    this.cell_list[r][c].color = "red";
+                    document.getElementById(""+r+""+c).style.background='#FF0000';
+                }
+                else if(data.cli[r][c] == 2)
+                {
+                    this.cell_list[r][c].used = true;
+                    this.cell_list[r][c].color = "yellow"
+                    document.getElementById(""+r+""+c).style.background='#FFFF00'
+                }
+            }
+        }
+        console.log(data.cli)
+    }
+
+    async fetchUpdateFromServer()
+    {
+        if(!this.able_to_click)
+            try {
+                const response = await fetch(`/gamestate/${this.player}/${this.id}`);
+                const json = await response.json();
+                this.updateGame(json);
+            } catch (error) {
+                console.log(error);
+            }
+    }
+
+    wait()
+    {
+        setInterval(this.fetchUpdateFromServer(), 3000)
+    }
+
+    async newGame()
+    {
+        console.log(this.able_to_find_new_game)
+        if(this.able_to_find_new_game)
+        {
+            this.able_to_find_new_game = false
+            try {
+                const response = await fetch('/newgame');
+                const json = await response.json();
+                this.player = json.player;
+                this.id = json.id;
+                if (this.player == "player1")
+                {
+                    this.player_color = '#FF0000';
+                    this.player_color_str = "red"
+                }
+                else
+                {
+                    this.player_color = '#FFFF00';
+                    this.player_color_str = "yellow"
+                }
+                this.updateGame(json);
+                this.wait()
+            } catch (error) {
+                console.log(error);
+            }
+            
+        }
+        
     }
 
     findCell(id)
@@ -65,10 +139,6 @@ class Game
         return rows - 1;
     }
 
-    NewGame()
-    {
-        console.log("NewGame");
-    }
 
     fieldEvaluation(last_token_row, last_token_column, last_color)
     {
@@ -128,13 +198,13 @@ class Game
 
     }
 
-    winScreen(color)
+    winScreen()
     {
         for (let r = 0; r < rows; r++)
         {
             for (let c = 0; c < columns; c++)
             {
-                document.getElementById(this.cell_list[r][c].id).style.background=color;//red
+                document.getElementById(this.cell_list[r][c].id).style.background=this.player_color;//red
             }
         }
     }
@@ -144,33 +214,15 @@ class Game
         if (this.able_to_click)
         {
             let cell = this.findCell(button.id)
-            let color = ''
-            let color_str = ""
             if (!cell.used)
             {
                 cell.used = false
-                if (document.getElementById("player").className == "player1")
-                {
-                    color = '#FF0000';
-                    color_str = "red"
-                    document.getElementById("player").className = "player2";
-                }
-                else
-                {
-                    color = '#FFFF00';
-                    color_str = "yellow"
-                    document.getElementById("player").className = "player1";
-                }
                 let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
                 this.cell_list[free_row][parseInt(cell.id[1])].used = true
-                this.cell_list[free_row][parseInt(cell.id[1])].color = color_str
-                document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=color;//red
-                let win = this.fieldEvaluation(free_row, parseInt(cell.id[1]), color_str)
-                if(win)
-                {
-                    this.winScreen(color);
-                    this.able_to_click = false
-                }
+                this.cell_list[free_row][parseInt(cell.id[1])].color = this.player_color_str
+                document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=this.player_color;//red
+                this.able_to_click = false
+                document.getElementById("player").className = "notmyturn"
             }
         }
     }
@@ -185,13 +237,13 @@ class View
 
     connectToGame(game) 
     {
-        document.getElementById("NewGame").addEventListener("click", () => game.NewGame(), false);
         let index = 0;
         for (let button of this.grid.getElementsByTagName("button"))
         {
             button.addEventListener("click", () => game.insertPiece(button), false);
             index++;
-        }  
+        } 
+        document.getElementById("NewGame").addEventListener("click", () => game.newGame(), false)
     }
 }
 
