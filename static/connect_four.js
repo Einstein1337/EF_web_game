@@ -16,6 +16,7 @@ class Game
     constructor()
     {
         this.id = 0
+        this.state = ""
         this.able_to_find_new_game = true
         this.player = 0
         this.cell_list = []
@@ -40,6 +41,7 @@ class Game
     updateGame(data)
     {
         this.able_to_click = data.turn
+        this.state = data.state
         if (this.able_to_click == true)
         {
             document.getElementById("player").className = this.player;
@@ -65,8 +67,9 @@ class Game
         console.log(data.cli)
     }
 
-    async fetchUpdateFromServer()
+    async fetchCurrentGame()
     {
+        console.log("fetch")
         if(!this.able_to_click)
             try {
                 const response = await fetch(`/gamestate/${this.player}/${this.id}`);
@@ -77,14 +80,26 @@ class Game
             }
     }
 
-    wait()
+    // wait ms milliseconds
+    wait(ms) 
     {
-        setInterval(this.fetchUpdateFromServer(), 3000)
+        console.log("Wait")
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+        
+    /** Poll the current game while it's their turn. */
+    async pollState() 
+    {
+        console.log("poll")
+        while (this.state == "theirturn" || this.state == "waiting")
+            {
+                await this.wait(1000);
+                await this.fetchCurrentGame();
+            }
     }
 
     async newGame()
     {
-        console.log(this.able_to_find_new_game)
         if(this.able_to_find_new_game)
         {
             this.able_to_find_new_game = false
@@ -104,7 +119,7 @@ class Game
                     this.player_color_str = "yellow"
                 }
                 this.updateGame(json);
-                this.wait()
+                this.pollState()
             } catch (error) {
                 console.log(error);
             }

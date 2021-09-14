@@ -17,7 +17,7 @@ class Cell:
 class Game:
     def __init__(self, id):
         self.id = 0
-        self.mode = "waiting"
+        self.state = "waiting"
         self.player1 = Player(1, "red")
         self.player2 = Player(2, "yellow")
         self.currentPlayer = self.player1
@@ -29,7 +29,7 @@ class Game:
                 self.cell_list[r].append(Cell(f"{r}{c}"))
 
     def Join(self):
-        self.mode = "running"
+        self.state = "running"
         return self.player2.str
     
 

@@ -26,32 +26,35 @@ def newGame():
     global next_game_id
     if len(game_list) > 0:
         for game in game_list:
-            if game.mode != "running":
+            if game.state != "running":
                player_str = game.Join()
-               return jsonify(player=player_str, turn=True, id=game.id, cli=default_cell_list)
+               return jsonify(player=player_str, turn=False, id=game.id, cli=default_cell_list, state="theirturn")
         game_list.append(Game(next_game_id))
         next_game_id +=1 
         
         cg = game_list[-1]
-        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=default_cell_list)
+        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=default_cell_list, state="waiting")
             
     else: 
         game_list.append(Game(next_game_id))
         next_game_id +=1 
         
         cg = game_list[-1]
-        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=default_cell_list)
+        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=default_cell_list, state="waiting")
 
 @app.route("/gamestate/<player>/<int:game_id>")
 def gameState(player, game_id):
     for game in game_list:
         if game.id == game_id:
-            if game.currentPlayer.str == player:
-                turn = True
-            else:
-                turn = False
-            cell_list_int = game.cellState()
-            return  jsonify(turn=turn, cli=cell_list_int)
+            if game.state == "running":
+                if game.currentPlayer.str == player:
+                    state = "myturn"
+                    turn = True
+                else:
+                    state = "theirturn"
+                    turn = False
+                cell_list_int = game.cellState()
+                return  jsonify(turn=turn, cli=cell_list_int)
             
 
     
