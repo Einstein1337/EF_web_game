@@ -53,8 +53,9 @@ def gameState(player, game_id):
                 else:
                     state = "theirturn"
                     turn = False
-                cell_list_int = game.cellState()
-                return  jsonify(turn=turn, cli=cell_list_int)
+                return  jsonify(turn=turn, cli=game.cellState(), state=state)
+            else:
+                return  jsonify(turn=False, cli=game.cellState(), state=game.state)
             
 
     

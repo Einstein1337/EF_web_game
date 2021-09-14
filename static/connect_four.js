@@ -40,6 +40,7 @@ class Game
 
     updateGame(data)
     {
+        console.log("update")
         this.able_to_click = data.turn
         this.state = data.state
         if (this.able_to_click == true)
@@ -64,12 +65,11 @@ class Game
                 }
             }
         }
-        console.log(data.cli)
+        console.log(data.cli);
     }
 
     async fetchCurrentGame()
     {
-        console.log("fetch")
         if(!this.able_to_click)
             try {
                 const response = await fetch(`/gamestate/${this.player}/${this.id}`);
