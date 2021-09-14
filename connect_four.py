@@ -90,11 +90,18 @@ class Game:
         cell = self.cell_list[row][column]
         cell.used = True
         cell.color = self.currentPlayer.color
+
+        if self.fieldEvaluation(row, column, self.currentPlayer.color):
+            self.state = "win" 
+
+            for r in self.cell_list:
+                for c in r:
+                  c.used = True
+                  c.color = self.currentPlayer.color  
+                    
+                    
+
         if self.currentPlayer.id == 1:
             self.currentPlayer = self.player2
         else:
             self.currentPlayer = self.player1
-        if self.fieldEvaluation(row, column, self.cell_list[row][column].color):
-            self.state = "win" 
-            return self.currentPlayer.hex_color
-        return ''

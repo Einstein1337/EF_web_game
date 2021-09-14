@@ -28,19 +28,19 @@ def newGame():
         for game in game_list:
             if game.state != "running":
                player_str = game.Join()
-               return jsonify(player=player_str, turn=False, id=game.id, cli=game.cellState(), state="theirturn", win_color='')
+               return jsonify(player=player_str, turn=False, id=game.id, cli=game.cellState(), state="theirturn")
         game_list.append(Game(next_game_id))
         next_game_id +=1 
 
         cg = game_list[-1]
-        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=cg.cellState(), state="waiting", win_color='')
+        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=cg.cellState(), state="waiting")
             
     else: 
         game_list.append(Game(next_game_id))
         next_game_id +=1 
         
         cg = game_list[-1]
-        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=cg.cellState(), state="waiting", win_color='')
+        return  jsonify(player=cg.currentPlayer.str, turn=False, id=cg.id, cli=cg.cellState(), state="waiting")
 
 @app.route("/gamestate/<player>/<int:game_id>")
 def gameState(player, game_id):
@@ -53,16 +53,16 @@ def gameState(player, game_id):
                 else:
                     state = "theirturn"
                     turn = False
-                return  jsonify(turn=turn, cli=game.cellState(), state=state, win_color='')
+                return  jsonify(turn=turn, cli=game.cellState(), state=state)
             else:
-                return  jsonify(turn=False, cli=game.cellState(), state=game.state, win_color='')
+                return  jsonify(turn=False, cli=game.cellState(), state=game.state)
 
-@app.route("/move/<int:game_id>/<int:row>/<int:column>")
-def move(game_id, row, column):
+@app.route("/move/<player>/<int:game_id>/<int:row>/<int:column>")
+def move(player, game_id, row, column):
     for game in game_list:
         if game.id == game_id:
-            win_color = game.move(row, column)
-            return jsonify(turn=False, cli=game.cellState(), state="theirturn", win_color=win_color)
+            game.move(row, column)
+            return jsonify(turn=False, cli=game.cellState(), state="theirturn")
             
 
     

@@ -25,6 +25,7 @@ class Game
         this.player = ""
         this.player_color = ''
         this.player_color_str = ""
+        this.win_color = ''
 
         for (let r = 0; r < rows; r++)
         {
@@ -42,11 +43,6 @@ class Game
     {
         this.able_to_click = data.turn
         this.state = data.state
-        console.log(data.state)
-        if (this.state == "win")
-        {
-            this.winScreen(data.win_color)
-        }
         if (this.able_to_click == true)
         {
             document.getElementById("player").className = this.player;
@@ -55,10 +51,8 @@ class Game
         {
             for (let c = 0; c < columns; c++)
             {
-                console.log(data.cli[r][c])
                 if(data.cli[r][c] == 1)
                 {
-                    console.log("red")
                     this.cell_list[r][c].used = true;
                     this.cell_list[r][c].color = "red";
                     document.getElementById(""+r+""+c).style.background='#FF0000';
@@ -174,7 +168,7 @@ class Game
     {
         console.log(row, column)
         try {
-            const response = await fetch(`/move/${this.id}/${row}/${column}`);
+            const response = await fetch(`/move/${this.player}/${this.id}/${row}/${column}`);
             const json = await response.json();
             this.updateGame(json);
         } catch (error) {
