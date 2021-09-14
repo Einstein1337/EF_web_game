@@ -74,24 +74,20 @@ class Game:
             cell_list_int.append([])
             for c in range(COLUMNS):
                 if self.cell_list[r][c].used == False:
-                    cell_list_int.append(0)
+                    cell_list_int[r].append(0)
                 elif self.cell_list[r][c].color == "red":
-                    cell_list_int.append(1)
+                    cell_list_int[r].append(1)
                 elif self.cell_list[r][c].color == "yellow":
-                    cell_list_int.append(2)
+                    cell_list_int[r].append(2)
         return cell_list_int
                 
 
-    def move(self, column):
-        for row in range(ROWS):
-            if self.cell_list[row][column].used == True:
-                if row != 0:
-                    self.cell_list[row-1][column].used = True
-                    self.cell_list[row-1][column].color = self.currentPlayer.color
-
-                    if self.currentPlayer.id == 1:
-                        self.currentPlayer = self.player2
-                    else:
-                        self.currentPlayer = self.player1
-
-                    win = self.fieldEvaluation(row-1, column, self.cell_list[row-1][column].color)     
+    def move(self, row, column):
+        cell = self.cell_list[row][column]
+        cell.used = True
+        cell.color = self.currentPlayer.color
+        if self.currentPlayer.id == 1:
+            self.currentPlayer = self.player2
+        else:
+            self.currentPlayer = self.player1
+        win = self.fieldEvaluation(row-1, column, self.cell_list[row-1][column].color)  

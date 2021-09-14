@@ -51,8 +51,10 @@ class Game
         {
             for (let c = 0; c < columns; c++)
             {
+                console.log(data.cli[r][c])
                 if(data.cli[r][c] == 1)
                 {
+                    console.log("red")
                     this.cell_list[r][c].used = true;
                     this.cell_list[r][c].color = "red";
                     document.getElementById(""+r+""+c).style.background='#FF0000';
@@ -90,7 +92,6 @@ class Game
     /** Poll the current game while it's their turn. */
     async pollState() 
     {
-        console.log("poll")
         while (this.state == "theirturn" || this.state == "waiting")
             {
                 await this.wait(1000);
@@ -224,20 +225,35 @@ class Game
         }
     }
 
+    async fetchMove(row, column)
+    {
+        console.log(row, column)
+        try {
+            const response = await fetch(`/move/${this.id}/${row}/${column}`);
+            const json = await response.json();
+            this.updateGame(json);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     insertPiece(button)
     {
         if (this.able_to_click)
         {
-            let cell = this.findCell(button.id)
+            let cell = this.findCell(button.id);
             if (!cell.used)
             {
-                cell.used = false
-                let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]))
-                this.cell_list[free_row][parseInt(cell.id[1])].used = true
-                this.cell_list[free_row][parseInt(cell.id[1])].color = this.player_color_str
+                cell.used = false;
+                let free_row = this.findNearestFreeColumnPlace(parseInt(cell.id[1]));
+                this.cell_list[free_row][parseInt(cell.id[1])].used = true;
+                this.cell_list[free_row][parseInt(cell.id[1])].color = this.player_color_str;
                 document.getElementById(""+free_row+""+parseInt(cell.id[1])).style.background=this.player_color;//red
-                this.able_to_click = false
-                document.getElementById("player").className = "notmyturn"
+                this.able_to_click = false;
+                document.getElementById("player").className = "notmyturn";
+                this.fetchMove(free_row, parseInt(cell.id[1]));
+                this.state = "theirturn";
+                this.pollState();
             }
         }
     }
