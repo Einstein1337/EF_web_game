@@ -1,11 +1,15 @@
+from werkzeug.utils import header_property
+
+
 ROWS = 6
 COLUMNS = 7
 
 class Player:
-    def __init__(self, id, color):
+    def __init__(self, id, color, hex_color):
         self.id = id
         self.str = f"player{self.id}"
         self.color = color
+        self.hex_color = hex_color
 
 
 class Cell:
@@ -18,8 +22,8 @@ class Game:
     def __init__(self, id):
         self.id = 0
         self.state = "waiting"
-        self.player1 = Player(1, "red")
-        self.player2 = Player(2, "yellow")
+        self.player1 = Player(1, "red", '#FF0000')
+        self.player2 = Player(2, "yellow", '#FFFF00')
         self.currentPlayer = self.player1
         self.cell_list = []
 
@@ -90,4 +94,7 @@ class Game:
             self.currentPlayer = self.player2
         else:
             self.currentPlayer = self.player1
-        win = self.fieldEvaluation(row-1, column, self.cell_list[row-1][column].color)  
+        if self.fieldEvaluation(row, column, self.cell_list[row][column].color):
+            self.state = "win" 
+            return self.currentPlayer.hex_color
+        return ''

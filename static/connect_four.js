@@ -40,9 +40,13 @@ class Game
 
     updateGame(data)
     {
-        console.log("update")
         this.able_to_click = data.turn
         this.state = data.state
+        console.log(data.state)
+        if (this.state == "win")
+        {
+            this.winScreen(data.win_color)
+        }
         if (this.able_to_click == true)
         {
             document.getElementById("player").className = this.player;
@@ -62,8 +66,8 @@ class Game
                 else if(data.cli[r][c] == 2)
                 {
                     this.cell_list[r][c].used = true;
-                    this.cell_list[r][c].color = "yellow"
-                    document.getElementById(""+r+""+c).style.background='#FFFF00'
+                    this.cell_list[r][c].color = "yellow";
+                    document.getElementById(""+r+""+c).style.background='#FFFF00';
                 }
             }
         }
@@ -155,72 +159,13 @@ class Game
         return rows - 1;
     }
 
-
-    fieldEvaluation(last_token_row, last_token_column, last_color)
-    {
-        let i_j_list = [[-1, 1],[0, 1],[1, 1],[1, 0]];
-        for (let dir = 0; dir < 4; dir++)
-        {
-            let winning_index = 0;
-            let no_win = false;
-            let i = i_j_list[dir][0];
-            let j = i_j_list[dir][1];
-            let running_var = 1;
-            for (let neighbour = 0; neighbour < 4; neighbour++)
-            {
-                let fail = false;
-                let next_row = last_token_row+i*running_var;
-                let next_column = last_token_column+j*running_var;
-
-                if(next_row <= rows-1 && next_column <= columns-1 && next_row >= 0 && next_column >= 0)
-                {
-                    if (this.cell_list[next_row][next_column].color != last_color)
-                    {
-                        fail = true
-                    }
-                    else
-                    {
-                        winning_index += 1;
-                    }
-                }
-                else
-                {
-                    fail = true
-                }
-
-                if (fail)
-                {
-                    if (no_win)
-                    {
-                        break
-                    }
-                    else
-                    {
-                        i *= -1;
-                        j *= -1;
-                        no_win == true;
-                        running_var = 0
-                    }
-                }
-
-                if (winning_index == 3)
-                {
-                    return true;
-                }
-                running_var++;
-            }    
-        }
-        return false;
-
-    }
-
-    winScreen()
+    winScreen(win_color)
     {
         for (let r = 0; r < rows; r++)
         {
             for (let c = 0; c < columns; c++)
             {
-                document.getElementById(this.cell_list[r][c].id).style.background=this.player_color;//red
+                document.getElementById(this.cell_list[r][c].id).style.background=win_color;//red
             }
         }
     }
