@@ -26,7 +26,7 @@ def newGame():
     global next_game_id
     if len(game_list) > 0:
         for game in game_list:
-            if game.state != "running":
+            if game.state == "waiting":
                player_str = game.Join()
                return jsonify(player=player_str, turn=False, id=game.id, cli=game.cellState(), state="theirturn")
         game_list.append(Game(next_game_id))

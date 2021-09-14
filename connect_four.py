@@ -20,7 +20,7 @@ class Cell:
 
 class Game:
     def __init__(self, id):
-        self.id = 0
+        self.id = id
         self.state = "waiting"
         self.player1 = Player(1, "red", '#FF0000')
         self.player2 = Player(2, "yellow", '#FFFF00')

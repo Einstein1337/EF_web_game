@@ -41,6 +41,7 @@ class Game
 
     updateGame(data)
     {
+        console.log(this.id)
         this.able_to_click = data.turn
         this.state = data.state
         if (this.able_to_click == true)
