@@ -57,8 +57,8 @@ def gameState(player, game_id):
             else:
                 return  jsonify(turn=False, cli=game.cellState(), state=game.state)
 
-@app.route("/move/<player>/<int:game_id>/<int:row>/<int:column>")
-def move(player, game_id, row, column):
+@app.route("/move/<int:game_id>/<int:row>/<int:column>")
+def move(game_id, row, column):
     for game in game_list:
         if game.id == game_id:
             game.move(row, column)
