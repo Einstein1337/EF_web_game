@@ -25,7 +25,6 @@ class Game
         this.player = ""
         this.player_color = ''
         this.player_color_str = ""
-        this.win_color = ''
 
         for (let r = 0; r < rows; r++)
         {
@@ -41,9 +40,12 @@ class Game
 
     updateGame(data)
     {
-        console.log(this.id)
         this.able_to_click = data.turn
         this.state = data.state
+        if (this.state == "win")
+        {
+            this.able_to_find_new_game = true;
+        }
         if (this.able_to_click == true)
         {
             document.getElementById("player").className = this.player;
@@ -64,9 +66,14 @@ class Game
                     this.cell_list[r][c].color = "yellow";
                     document.getElementById(""+r+""+c).style.background='#FFFF00';
                 }
+                else
+                {
+                    this.cell_list[r][c].used = false;
+                    this.cell_list[r][c].color = "";
+                    document.getElementById(""+r+""+c).style.background='#808080';
+                }
             }
         }
-        console.log(data.cli);
     }
 
     async fetchCurrentGame()
@@ -84,7 +91,6 @@ class Game
     // wait ms milliseconds
     wait(ms) 
     {
-        console.log("Wait")
         return new Promise(resolve => setTimeout(resolve, ms));
     }
         
@@ -154,20 +160,8 @@ class Game
         return rows - 1;
     }
 
-    winScreen(win_color)
-    {
-        for (let r = 0; r < rows; r++)
-        {
-            for (let c = 0; c < columns; c++)
-            {
-                document.getElementById(this.cell_list[r][c].id).style.background=win_color;//red
-            }
-        }
-    }
-
     async fetchMove(row, column)
     {
-        console.log(row, column)
         try {
             const response = await fetch(`/move/${this.player}/${this.id}/${row}/${column}`);
             const json = await response.json();
