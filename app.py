@@ -1,4 +1,4 @@
-from os import truncate
+from os import stat, truncate
 from flask import Flask
 from flask import session
 from werkzeug.utils import redirect
@@ -62,7 +62,11 @@ def move(player, game_id, row, column):
     for game in game_list:
         if game.id == game_id:
             game.move(row, column)
-            return jsonify(turn=False, cli=game.cellState(), state="theirturn")
+            if game.state == "red wins" or game.state == "yellow wins":
+                state = game.state
+            else:
+                state = "theirturn"
+            return jsonify(turn=False, cli=game.cellState(), state=state)
             
 
     

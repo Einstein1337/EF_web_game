@@ -14,9 +14,22 @@ div.grid {
 
 #NewGame{
   text-align: center;
+  display: inline-block;
+  margin: 0.8vw;
+}
+
+.NewGameContainer{
   margin: auto;
   display: flex;
-  display: grid;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameStateText{
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
 div.grid button {
@@ -44,4 +57,5 @@ div.grid button {
   h1 {
       font-family: Arial, Helvetica, sans-serif;
       text-align: center;
+      margin: 1vh;
   }

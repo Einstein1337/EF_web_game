@@ -92,7 +92,7 @@ class Game:
         cell.color = self.currentPlayer.color
 
         if self.fieldEvaluation(row, column, self.currentPlayer.color):
-            self.state = "win" 
+            self.state = f"{self.currentPlayer.color} wins" 
 
             for r in self.cell_list:
                 for c in r:

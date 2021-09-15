@@ -16,7 +16,7 @@ class Game
     constructor()
     {
         this.id = 0
-        this.state = ""
+        this.state = "init"
         this.able_to_find_new_game = true
         this.player = 0
         this.cell_list = []
@@ -40,9 +40,10 @@ class Game
 
     updateGame(data)
     {
-        this.able_to_click = data.turn
-        this.state = data.state
-        if (this.state == "win")
+        this.able_to_click = data.turn;
+        this.state = data.state;
+        document.getElementById("gameStateText").innerHTML = this.state;
+        if (this.state == "red wins" || this.state == "yellow wins")
         {
             this.able_to_find_new_game = true;
         }
@@ -68,9 +69,10 @@ class Game
                 }
                 else
                 {
-                    this.cell_list[r][c].used = false;
-                    this.cell_list[r][c].color = "";
-                    document.getElementById(""+r+""+c).style.background='#808080';
+                    if(this.cell_list[r][c].used == true)
+                        this.cell_list[r][c].used = false;
+                        this.cell_list[r][c].color = "";
+                        document.getElementById(""+r+""+c).style.background= '';
                 }
             }
         }
