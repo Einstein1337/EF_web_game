@@ -112,7 +112,7 @@ class Game
         {
             this.able_to_find_new_game = false
             try {
-                const response = await fetch('/newgame');
+                const response = await fetch('/newgame', {method: 'POST'});
                 const json = await response.json();
                 this.player = json.player;
                 this.id = json.id;
@@ -165,7 +165,7 @@ class Game
     async fetchMove(row, column)
     {
         try {
-            const response = await fetch(`/move/${this.id}/${row}/${column}`);
+            const response = await fetch(`/move/${this.id}/${row}/${column}`, {method: 'POST'});
             const json = await response.json();
             this.updateGame(json);
         } catch (error) {
