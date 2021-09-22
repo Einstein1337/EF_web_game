@@ -87,21 +87,48 @@ class Game:
                 
 
     def move(self, row, column):
-        cell = self.cell_list[row][column]
-        cell.used = True
-        cell.color = self.currentPlayer.color
+        if self.state == "running":
+            cell = self.cell_list[row][column]
+            cell.used = True
+            cell.color = self.currentPlayer.color
 
-        if self.fieldEvaluation(row, column, self.currentPlayer.color):
-            self.state = f"{self.currentPlayer.color} wins" 
+            if self.fieldEvaluation(row, column, self.currentPlayer.color):
+                self.state = f"{self.currentPlayer.color} wins" 
+
+                for r in self.cell_list:
+                    for c in r:
+                        c.used = True
+                        c.color = self.currentPlayer.color  
+                            
+                        
+
+            if self.currentPlayer.id == 1:
+                self.currentPlayer = self.player2
+            else:
+                self.currentPlayer = self.player1
+
+    def sm(self, row, column, color):
+        cell = self.cell_list[row][column]
+        if color == "red" or color == "yellow":
+            cell.used = True
+            cell.color = color
+        else:
+            cell.used = False
+        
+        if self.fieldEvaluation(row, column, color):
+            self.state = f"{color} wins" 
 
             for r in self.cell_list:
                 for c in r:
                   c.used = True
-                  c.color = self.currentPlayer.color  
-                    
-                    
+                  c.color = color  
 
-        if self.currentPlayer.id == 1:
-            self.currentPlayer = self.player2
-        else:
-            self.currentPlayer = self.player1
+    def win(self, color):
+        self.state = f"{color} wins" 
+
+        for r in self.cell_list:
+            for c in r:
+                c.used = True
+                c.color = color
+
+
