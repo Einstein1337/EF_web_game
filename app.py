@@ -83,9 +83,10 @@ def move(game_id, row, column):
                 state = "theirturn"
             return jsonify(turn=False, cli=game.cellState(), state=state)
 
+#-------------------GODMODE-------------------#
+
 @app.route("/gamelist")
 def gameList():
-    app.logger.warning(request.access_route)
     if request.remote_addr != '127.0.0.1':
         abort(403)
     game_ids = []
