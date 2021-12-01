@@ -121,7 +121,3 @@ def win(game_id, color):
         if game.id == game_id:
             game.win(color)
             return jsonify(cli=game.cellState())
-
-
-
-

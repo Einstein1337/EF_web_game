@@ -130,5 +130,3 @@ class Game:
             for c in r:
                 c.used = True
                 c.color = color
-
-
